@@ -1,4 +1,4 @@
-﻿import Game = require('game');
+import Game = require('game');
 import Renderer = require('renderer');
 import Player = require('player');
 import $ = require('jquery');
@@ -11,7 +11,7 @@ $(document).ready(function () {
     canvas.height = 768;
 
     // Add to the document
-    $(document.body).append(canvas);
+    $(document.body).append($(canvas));
 
     // Start the game when document is loaded
     var renderer = new Renderer(canvas, 20, 20);
