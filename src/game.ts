@@ -1,10 +1,13 @@
-﻿import Renderer = require('renderer');
+import Renderer = require('renderer');
 import Player = require('player');
+import Enemy = require('enemy');
+import Entity = require('entity');
+import ImagedEntity = require('imagedEntity');
 import Map = require('map');
 import Keyboard = require('keyboard');
 
 class Game {
-    private _players: Player[];
+    private _entities: Entity[];
     private _currentPlayer: Player;
     private _runner: () => void;
     private _map: Map;
@@ -17,8 +20,9 @@ class Game {
         var playerImg = new Image();
         playerImg.src = 'img/player1.png';
         this._currentPlayer = new Player(2, 2, playerImg);
-        this._players = [];
-        this._players.push(this._currentPlayer);
+        
+        this._entities = [];
+        this._entities.push(this._currentPlayer);
     }
 
     get renderer(): Renderer {
@@ -43,9 +47,11 @@ class Game {
         // First map on the background
         renderer.renderMap(this._map);
 
-        // Then players
-        this._players.forEach(function (player: Player) {
-            renderer.renderPlayer(player);
+        // Then entities
+        this._entities.forEach(function (entity: Entity) {
+            if (entity instanceof ImagedEntity) {
+                renderer.renderImagedEntity(<ImagedEntity> entity);
+            }
         });
     }
 
