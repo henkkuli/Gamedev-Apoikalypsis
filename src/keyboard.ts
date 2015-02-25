@@ -25,9 +25,11 @@ class Keyboard {
         if (!this._keysDown[e.keyCode])
             this._keysHit[e.keyCode] = true;
         this._keysDown[e.keyCode] = true;
+        e.preventDefault();
     }
     private onKeyUp(e: JQueryKeyEventObject): void {
         this._keysDown[e.keyCode] = false;
+        e.preventDefault();
     }
 }
 
