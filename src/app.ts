@@ -14,8 +14,8 @@ $(document).ready(function () {
     $(document.body).append(canvas);
 
     // Start the game when document is loaded
-    var renderer = new Renderer(canvas);
+    var renderer = new Renderer(canvas, 20, 20);
     var game = new Game(renderer);
 
-    renderer.draw();
+    game.start();
 });
