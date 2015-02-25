@@ -16,13 +16,20 @@ class Game {
     constructor(private _renderer: Renderer, private _keyboard: Keyboard) {
         // TODO: Get map from somewhere else
         this._map = new Map(10, 10);
-
+        this._entities = [];
+    
+        // Player
         var playerImg = new Image();
         playerImg.src = 'img/player1.png';
         this._currentPlayer = new Player(2, 2, playerImg);
-        
-        this._entities = [];
         this._entities.push(this._currentPlayer);
+        
+        // Enemies
+        var enemyImg = new Image();
+        enemyImg.src = 'img/enemy1.png';
+        for (var i = 0; i < 10; i++) {
+            this._entities.push(new Enemy(Math.random() * this._map._width, Math.random() * this._map._height, enemyImg));
+        }
     }
 
     get renderer(): Renderer {
