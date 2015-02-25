@@ -25,8 +25,8 @@ class Renderer {
     }
 
     renderPlayer(player: Player): void {
-        var x = player.x * this.tileWidth;
-        var y = player.y * this.tileHeight;
+        var x = (player.x + 1) * this.tileWidth;
+        var y = (player.y + 1) * this.tileHeight;
 
         this.ctx.fillStyle = '#00f';
         this.ctx.beginPath();
@@ -35,8 +35,8 @@ class Renderer {
     }
 
     renderMap(map: Map): void {
-        for (var x = 0; x * this.tileWidth < this.width; x++) {
-            for (var y = 0; y * this.tileHeight < this.height; y++) {
+        for (var x = -1; x * this.tileWidth < this.width; x++) {
+            for (var y = -1; y * this.tileHeight < this.height; y++) {
                 var tile = map.getTile(x, y);
                 // Setup styles based on the tile
                 switch (tile) {
@@ -56,13 +56,13 @@ class Renderer {
                 }
                 // Draw the tile
                 this.ctx.fillRect(
-                    (x - 0.5) * this.tileWidth,
-                    (y - 0.5) * this.tileHeight,
+                    (x + 0.5) * this.tileWidth,
+                    (y + 0.5) * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight);
                 this.ctx.strokeRect(
-                    (x - 0.5) * this.tileWidth,
-                    (y - 0.5) * this.tileHeight,
+                    (x + 0.5) * this.tileWidth,
+                    (y + 0.5) * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight);
             }
