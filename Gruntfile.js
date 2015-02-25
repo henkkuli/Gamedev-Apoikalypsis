@@ -12,6 +12,10 @@
         main: {
             options: {
                 name: 'app',
+                include: [
+                    '../../lib/es5-shim',
+                    '../../lib/es6-shim'
+                ],
                 out: 'build/app.js'
             }
         }
@@ -37,7 +41,7 @@
                 dest: 'build/ts',
                 options: {
                     module: 'amd',
-                    target: 'es5',
+                    target: 'es6',
                     basePath: 'src',
                     sourceMap: true,
                     references: ['lib/**/*.d.ts']

@@ -9,20 +9,27 @@ class Game {
     private _runner: () => void;
     private _map: Map;
     private _lastUpdate: number;
+    private _resourcePromise: Promise<any[]>;
 
     constructor(private _renderer: Renderer, private _keyboard: Keyboard) {
-        // TODO: Get map from somewhere else
-        this._map = new Map(10, 10);
+        this._map = new Map();
+        var mapPromise = this._map.load('resources/test.map');
 
         var playerImg = new Image();
         playerImg.src = 'img/player1.png';
         this._currentPlayer = new Player(2, 2, playerImg);
         this._players = [];
         this._players.push(this._currentPlayer);
+
+        this._resourcePromise = Promise.all([mapPromise]);
     }
 
     get renderer(): Renderer {
         return this._renderer;
+    }
+
+    get resourcePromise(): Promise<any[]> {
+        return this._resourcePromise;
     }
 
     update(delta: number): void {

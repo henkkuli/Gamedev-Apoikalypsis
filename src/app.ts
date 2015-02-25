@@ -19,5 +19,8 @@ $(document).ready(function () {
     var keyboard = new Keyboard($(document.body));
     var game = new Game(renderer, keyboard);
 
-    game.start();
+    game.resourcePromise.then(() => {
+        game.start();
+    });
+
 });

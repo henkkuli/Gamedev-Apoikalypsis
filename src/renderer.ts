@@ -54,6 +54,7 @@ class Renderer {
                         break;
 
                     default:
+                        console.log(tile + ': ' + Map.Tile[tile]);
                         this.ctx.fillStyle = '#f0f';
                         this.ctx.strokeStyle = '#fff';
                         break;
