@@ -1,7 +1,7 @@
-﻿import Entity = require('entity');
+import ImagedEntity = require('imagedEntity');
 
-class Player extends Entity {
-    constructor(x: number, y: number) { super(x, y, 0.5, 0.5); }
+class Player extends ImagedEntity {
+    constructor(x: number, y: number, image: HTMLImageElement) { super(x, y, 1, 1, image); }
 }
 
 export = Player;

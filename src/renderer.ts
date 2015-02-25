@@ -1,4 +1,4 @@
-﻿import Player = require('player');
+import Player = require('player');
 import Map = require('map');
 
 class Renderer {
@@ -27,11 +27,15 @@ class Renderer {
     renderPlayer(player: Player): void {
         var x = (player.x + 1) * this.tileWidth;
         var y = (player.y + 1) * this.tileHeight;
+        var w = player.width * this.tileWidth;
+        var h = player.height * this.tileHeight;
 
-        this.ctx.fillStyle = '#00f';
-        this.ctx.beginPath();
-        this.ctx.arc(x, y,(player.width * this.tileWidth + player.height * this.tileHeight) * 0.25, 0, 2 * Math.PI, false);
-        this.ctx.fill();
+        this.ctx.drawImage(player.image, x - 0.5 * w, y - 0.5 * h, w, h);
+
+        //this.ctx.fillStyle = '#00f';
+        //this.ctx.beginPath();
+        //this.ctx.arc(x, y,(player.width * this.tileWidth + player.height * this.tileHeight) * 0.25, 0, 2 * Math.PI, false);
+        //this.ctx.fill();
     }
 
     renderMap(map: Map): void {

@@ -1,4 +1,4 @@
-﻿import Renderer = require('renderer');
+import Renderer = require('renderer');
 import Player = require('player');
 import Map = require('map');
 
@@ -11,8 +11,10 @@ class Game {
     constructor(private _renderer: Renderer) {
         // TODO: Get map from somewhere else
         this._map = new Map(10, 10);
-
-        this._currentPlayer = new Player(2,2);
+        
+        var playerImg = new Image();
+        playerImg.src = 'img/player1.png';
+        this._currentPlayer = new Player(2,2, playerImg);
         this._players = [];
         this._players.push(this._currentPlayer);
     }
