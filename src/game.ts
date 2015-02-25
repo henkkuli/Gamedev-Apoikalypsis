@@ -1,10 +1,13 @@
 ﻿import Renderer = require('renderer');
 import Player = require('player');
+import Enemy = require('enemy');
+import Entity = require('entity');
+import ImagedEntity = require('imagedEntity');
 import Map = require('map');
 import Keyboard = require('keyboard');
 
 class Game {
-    private _players: Player[];
+    private _entities: Entity[];
     private _currentPlayer: Player;
     private _runner: () => void;
     private _map: Map;
@@ -14,13 +17,25 @@ class Game {
     constructor(private _renderer: Renderer, private _keyboard: Keyboard) {
         this._map = new Map();
         var mapPromise = this._map.load('resources/test.map');
-
+        this._entities = [];
+    
+        // Player
         var playerImg = new Image();
         playerImg.src = 'img/player1.png';
         this._currentPlayer = new Player(2, 2, playerImg);
-        this._players = [];
-        this._players.push(this._currentPlayer);
+        this._entities.push(this._currentPlayer);
+        
+        // Enemies
+        var enemyImg = new Image();
+        enemyImg.src = 'img/enemy1.png';
+        // Create enemies when the map is loaded
+        mapPromise.then(() => {
+            for (var i = 0; i < 10; i++) {
+                this._entities.push(new Enemy(Math.random() * (this._map.width - 1), Math.random() * (this._map.height - 1), enemyImg));
+            }
+        });
 
+        // TODO: Add images to promise
         this._resourcePromise = Promise.all([mapPromise]);
     }
 
@@ -50,9 +65,11 @@ class Game {
         // First map on the background
         renderer.renderMap(this._map);
 
-        // Then players
-        this._players.forEach(function (player: Player) {
-            renderer.renderPlayer(player);
+        // Then entities
+        this._entities.forEach(function (entity: Entity) {
+            if (entity instanceof ImagedEntity) {
+                renderer.renderImagedEntity(<ImagedEntity> entity);
+            }
         });
     }
 
