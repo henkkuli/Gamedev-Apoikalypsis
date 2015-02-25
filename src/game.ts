@@ -12,7 +12,9 @@ class Game {
         // TODO: Get map from somewhere else
         this._map = new Map(10, 10);
 
+        this._currentPlayer = new Player(2,2);
         this._players = [];
+        this._players.push(this._currentPlayer);
     }
 
     get renderer(): Renderer {

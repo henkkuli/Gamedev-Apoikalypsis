@@ -25,7 +25,13 @@ class Renderer {
     }
 
     renderPlayer(player: Player): void {
+        var x = player.x * this.tileWidth;
+        var y = player.y * this.tileHeight;
 
+        this.ctx.fillStyle = '#00f';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y,(player.width * this.tileWidth + player.height * this.tileHeight) * 0.25, 0, 2 * Math.PI, false);
+        this.ctx.fill();
     }
 
     renderMap(map: Map): void {
