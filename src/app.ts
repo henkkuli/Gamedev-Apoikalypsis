@@ -1,6 +1,7 @@
 import Game = require('game');
 import Renderer = require('renderer');
 import Player = require('player');
+import Keyboard = require('keyboard');
 import $ = require('jquery');
 
 $(document).ready(function () {
@@ -15,7 +16,8 @@ $(document).ready(function () {
 
     // Start the game when document is loaded
     var renderer = new Renderer(canvas, 20, 20);
-    var game = new Game(renderer);
+    var keyboard = new Keyboard($(document.body));
+    var game = new Game(renderer, keyboard);
 
     game.start();
 });
