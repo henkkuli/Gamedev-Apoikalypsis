@@ -1,0 +1,5 @@
+﻿class Player {
+
+}
+
+export = Player;
