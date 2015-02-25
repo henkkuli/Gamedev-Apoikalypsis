@@ -21,9 +21,9 @@ class Renderer {
     }
 
     renderPlayer(player: Player): void {
-        
+
     }
 
 }
 
-export = Renderer
+export = Renderer;
