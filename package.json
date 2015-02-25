@@ -1,0 +1,30 @@
+{
+  "name": "Gamedev-Apoikalypsis",
+  "version": "0.0.0",
+  "description": "",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt-contrib-less": "^1.0.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-newer": "^1.1.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-typescript": "^0.6.1",
+    "rjs-build-analysis": "^0.0.3",
+    "typescript": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/henkkuli/Gamedev-Apoikalypsis.git"
+  },
+  "author": "Henrik Lievonen & Jarkko Toivanen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/henkkuli/Gamedev-Apoikalypsis/issues"
+  },
+  "homepage": "https://github.com/henkkuli/Gamedev-Apoikalypsis"
+}
