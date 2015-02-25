@@ -1,4 +1,6 @@
-﻿class Renderer {
+﻿import Player = require('player');
+
+class Renderer {
     private _ctx: CanvasRenderingContext2D;
 
     constructor(private _canvas: HTMLCanvasElement) {
@@ -16,6 +18,10 @@
         ctx.lineTo(20, 100);
         ctx.lineTo(30, 20);
         ctx.fill();
+    }
+
+    renderPlayer(player: Player): void {
+        
     }
 
 }

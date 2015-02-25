@@ -1,4 +1,6 @@
-﻿class Player {
+﻿import Entity = require('entity');
+
+class Player extends Entity {
 
 }
 
