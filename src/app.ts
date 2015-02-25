@@ -6,6 +6,10 @@ import $ = require('jquery');
 $(document).ready(function () {
     // Create canvas
     var canvas = document.createElement('canvas');
+    // Setup canvas size
+    canvas.width = 1024;
+    canvas.height = 768;
+
     // Add to the document
     $(document.body).append(canvas);
 
