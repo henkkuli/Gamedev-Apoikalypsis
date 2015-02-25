@@ -1,75 +1,67 @@
-import ImagedEntity = require('imagedEntity');
-import Map = require('map');
+import Keyboard = require('./keyboard');
 
-class Renderer {
-    private _ctx: CanvasRenderingContext2D;
-
-    constructor(private _canvas: HTMLCanvasElement, private _tileWidth: number, private _tileHeight: number) {
-        this._ctx = this._canvas.getContext('2d');
-    }
-
-    get ctx(): CanvasRenderingContext2D {
-        return this._ctx;
-    }
-    get width(): number {
-        return this._canvas.width;
-    }
-    get height(): number {
-        return this._canvas.height;
-    }
-    get tileWidth(): number {
-        return this._tileWidth;
-    }
-    get tileHeight(): number {
-        return this._tileHeight;
-    }
-
-    renderImagedEntity(entity: ImagedEntity): void {
-        var x = (entity.x + 1) * this.tileWidth;
-        var y = (entity.y + 1) * this.tileHeight;
-        var w = entity.width * this.tileWidth;
-        var h = entity.height * this.tileHeight;
-
-        this.ctx.drawImage(entity.image, x - 0.5 * w, y - 0.5 * h, w, h);
-
-    }
-
-    renderMap(map: Map): void {
-        for (var x = -1; x * this.tileWidth < this.width; x++) {
-            for (var y = -1; y * this.tileHeight < this.height; y++) {
-                var tile = map.getTile(x, y);
-                // Setup styles based on the tile
-                switch (tile) {
-                    case Map.Tile.Wall:
-                        this.ctx.fillStyle = '#fa0';
-                        this.ctx.strokeStyle = '#fff';
-                        break;
-                    case Map.Tile.Floor:
-                        this.ctx.fillStyle = '#efe';
-                        this.ctx.strokeStyle = '#000';
-                        break;
-
-                    default:
-                        console.log(tile + ': ' + Map.Tile[tile]);
-                        this.ctx.fillStyle = '#f0f';
-                        this.ctx.strokeStyle = '#fff';
-                        break;
-                }
-                // Draw the tile
-                this.ctx.fillRect(
-                    (x + 0.5) * this.tileWidth,
-                    (y + 0.5) * this.tileHeight,
-                    this.tileWidth,
-                    this.tileHeight);
-                this.ctx.strokeRect(
-                    (x + 0.5) * this.tileWidth,
-                    (y + 0.5) * this.tileHeight,
-                    this.tileWidth,
-                    this.tileHeight);
-            }
-        }
-    }
-
+export interface RenderLayer {
+    /**
+     * Updates the layer state.
+     * Returns list of layers which will replace the current layer.
+     * If nothing should happen, update should return [this].
+     */
+    update(keyboard: Keyboard): RenderLayer[];
+    /**
+     * Renders the current layer
+     */
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): void;
 }
 
-export = Renderer;
+/**
+ * Implements a render layer stack.
+ * Rendering layers can be pushed with .push() and popped with .pop().
+ * Update method calls the update method of the top most layer.
+ * Render method calls the render method of the top most layer.
+ */
+export class Handler {
+    private _layerStack: RenderLayer[];
+    private _ctx: CanvasRenderingContext2D;
+
+    constructor(private _canvas: HTMLCanvasElement, private _keyboard: Keyboard) {
+        // Get the rendering context
+        this._ctx = this._canvas.getContext('2d');
+        // Initialize the stack
+        this._layerStack = [];
+    }
+
+    /**
+     * Adds a new rendering layer to the top of the stack.
+     */
+    push(layer: RenderLayer): void {
+        this._layerStack.push(layer);
+    }
+    /**
+     * Removes the top most rendering layer from the stack.
+     */
+    pop(): void {
+        this._layerStack.pop();
+    }
+
+    update(): void {
+        if (this._layerStack.length <= 0)
+            return;
+        // Pop the top most layer and call its update method
+        var oldTop = this._layerStack.pop();
+        var toPush = oldTop.update(this._keyboard);
+        // Push returned actions back to the stack
+        if (!toPush.forEach)
+            console.log(toPush);
+        toPush.forEach((layer) => this._layerStack.push(layer));
+        // If the top has changed run its update also
+        if (this._layerStack[this._layerStack.length - 1] !== oldTop)
+            this.update();
+    }
+
+    render(): void {
+        if (this._layerStack.length <= 0)
+            return;
+        // Render the top most layer
+        this._layerStack[this._layerStack.length - 1].render(this._ctx, this._canvas.width, this._canvas.height);
+    }
+}

@@ -58,8 +58,6 @@ class Map {
             }
         }
 
-        console.log(this._data);
-
         // Get map size
         this._width = this._data[0].length;
         this._height = this._data.length;

@@ -1,7 +1,8 @@
-import Game = require('game');
-import Renderer = require('renderer');
-import Player = require('player');
-import Keyboard = require('keyboard');
+import Game = require('./game');
+import renderer = require('./renderer');
+import Player = require('./player');
+import Keyboard = require('./keyboard');
+import Mainmenu = require('./menus/Mainmenu');
 import $ = require('jquery');
 
 $(document).ready(function () {
@@ -14,13 +15,26 @@ $(document).ready(function () {
     // Add to the document
     $(document.body).append($(canvas));
 
-    // Start the game when document is loaded
-    var renderer = new Renderer(canvas, 20, 20);
+    // Prepare rendering engine
     var keyboard = new Keyboard($(document.body));
-    var game = new Game(renderer, keyboard);
+    var renderHandler = new renderer.Handler(canvas, keyboard);
+    renderHandler.push(new Mainmenu());
 
-    game.resourcePromise.then(() => {
-        game.start();
-    });
+    var runner = () => {
+        renderHandler.update();
+        renderHandler.render();
+
+        window.requestAnimationFrame(runner);
+    };
+
+    runner();
+
+    // Start the game when document is loaded
+    //var renderer = new Renderer(canvas, 20, 20);
+    //var game = new Game(renderer, keyboard);
+
+    //game.resourcePromise.then(() => {
+    //    game.start();
+    //});
 
 });

@@ -1,97 +1,89 @@
-﻿import Renderer = require('renderer');
-import Player = require('player');
-import Enemy = require('enemy');
-import Entity = require('entity');
-import ImagedEntity = require('imagedEntity');
-import Map = require('map');
-import Keyboard = require('keyboard');
+﻿import Renderer = require('./renderer');
+import Player = require('./player');
+import Enemy = require('./enemy');
+import Entity = require('./entity');
+import ImagedEntity = require('./imagedEntity');
+import Map = require('./map');
+import Keyboard = require('./keyboard');
+import renderer = require('./renderer');
+import GameRenderer = require('./GameRenderer');
 
-class Game {
+class Game implements Renderer.RenderLayer {
     private _entities: Entity[];
     private _currentPlayer: Player;
     private _runner: () => void;
     private _map: Map;
     private _lastUpdate: number;
-    private _resourcePromise: Promise<any[]>;
+    private _renderer: GameRenderer;
 
-    constructor(private _renderer: Renderer, private _keyboard: Keyboard) {
-        this._map = new Map();
-        var mapPromise = this._map.load('resources/test.map');
+    constructor() {
+        // Initialize variables
         this._entities = [];
-    
-        // Player
-        var playerImg = new Image();
-        playerImg.src = 'img/player1.png';
-        this._currentPlayer = new Player(2, 2, playerImg);
-        this._entities.push(this._currentPlayer);
-        
-        // Enemies
-        var enemyImg = new Image();
-        enemyImg.src = 'img/enemy1.png';
-        // Create enemies when the map is loaded
-        mapPromise.then(() => {
+        this._renderer = new GameRenderer(30, 30);
+    }
+
+    load(mapUrl: string): Promise<any> {
+        // Load map
+        this._map = new Map();
+        var mapPromise = this._map.load(mapUrl);
+
+        var playerImagePromise = this.loadImage('img/player1.png');
+        var enemyImagePromise = this.loadImage('img/enemy1.png');
+
+        playerImagePromise.then((image: HTMLImageElement) => {
+            this._currentPlayer = new Player(2, 2, image);
+            this._entities.push(this._currentPlayer);
+        });
+        Promise.all(<Promise<any>[]>[mapPromise, enemyImagePromise]).then((value: any[]) => {
+            var image: HTMLImageElement = value[1];
             for (var i = 0; i < 10; i++) {
-                this._entities.push(new Enemy(Math.random() * (this._map.width - 1), Math.random() * (this._map.height - 1), enemyImg));
+                this._entities.push(new Enemy(Math.random() * (this._map.width - 1), Math.random() * (this._map.height - 1), image));
             }
         });
 
-        // TODO: Add images to promise
-        this._resourcePromise = Promise.all([mapPromise]);
+        return Promise.all(<Promise<any>[]>[mapPromise, playerImagePromise, enemyImagePromise]);
     }
 
-    get renderer(): Renderer {
-        return this._renderer;
-    }
-
-    get resourcePromise(): Promise<any[]> {
-        return this._resourcePromise;
-    }
-
-    update(delta: number): void {
-        var speed = delta * 5;
-        if (this._keyboard.isKeyDown(Keyboard.Key.Left))
-            this._currentPlayer.move(-speed, 0);
-        if (this._keyboard.isKeyDown(Keyboard.Key.Right))
-            this._currentPlayer.move(speed, 0);
-        if (this._keyboard.isKeyDown(Keyboard.Key.Up))
-            this._currentPlayer.move(0, -speed);
-        if (this._keyboard.isKeyDown(Keyboard.Key.Down))
-            this._currentPlayer.move(0, speed);
-    }
-
-    render(): void {
-        var renderer = this.renderer;
-
-        // First map on the background
-        renderer.renderMap(this._map);
-
-        // Then entities
-        this._entities.forEach(function (entity: Entity) {
-            if (entity instanceof ImagedEntity) {
-                renderer.renderImagedEntity(<ImagedEntity> entity);
-            }
+    private loadImage(url: string): Promise<HTMLImageElement> {
+        return new Promise<HTMLImageElement>((resolve: (image: HTMLImageElement) => void, reject: (err) => void) => {
+            var image = new Image();
+            image.addEventListener('load',() => {
+                resolve(image);
+            });
+            image.src = url;
         });
     }
 
-    start(): void {
-        // Create the runner
-        this._runner = this.run.bind(this);
-        // And run the first step which will continue running
-        this._lastUpdate = new Date().getTime();
-        this.run();
-    }
-
-    private run(): void {
+    update(keyboard: Keyboard): renderer.RenderLayer[] {
         var now = new Date().getTime();
         var delta = (now - this._lastUpdate) / 1000;
         this._lastUpdate = now;
 
-        // Game loop
-        this.update(delta);
-        this.render();
-        
-        // Continue the game loop
-        window.requestAnimationFrame(this._runner);
+        var speed = delta * 5;
+        if (keyboard.isKeyDown(Keyboard.Key.Left))
+            this._currentPlayer.move(-speed, 0);
+        if (keyboard.isKeyDown(Keyboard.Key.Right))
+            this._currentPlayer.move(speed, 0);
+        if (keyboard.isKeyDown(Keyboard.Key.Up))
+            this._currentPlayer.move(0, -speed);
+        if (keyboard.isKeyDown(Keyboard.Key.Down))
+            this._currentPlayer.move(0, speed);
+
+        return [this];
+    }
+
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): void {
+        var renderer = this._renderer;
+
+        // First map on the background
+        renderer.renderMap(ctx, this._map, width, height);
+
+        // Then entities
+        this._entities.forEach(function (entity: Entity) {
+            if (entity instanceof ImagedEntity) {
+                renderer.renderImagedEntity(ctx, <ImagedEntity> entity, width, height);
+            }
+        });
     }
 }
 
