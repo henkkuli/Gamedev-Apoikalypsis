@@ -50,12 +50,12 @@
             },
             typescript: {
                 files: 'src/**/*.ts',
-                tasks: ['typescript']
+                tasks: ['typescript', 'requirejs']
             },
-            requirejs: {
-                files: 'build/ts/**/*.js',
-                tasks: ['requirejs']
-            },
+            //requirejs: {
+            //    files: 'build/ts/**/*.js',
+            //    tasks: ['requirejs']
+            //},
             less: {
                 files: 'styles/**/*.less',
                 tasks: ['less']
