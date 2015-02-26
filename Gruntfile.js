@@ -65,13 +65,27 @@
                 tasks: ['less']
             }
         },
-        clean: ['build/**/*']
+        clean: ['build/**/*'],
+        'http-server': {
+            dev: {
+                root: '.',
+                port: 8080,
+                host: '0.0.0.0',
+                cache: 0,
+                showDir: false,
+                autoIndex: true,
+                ext: 'html',
+                runInBackground: false
+            }
+        }
     });
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-http-server');
 
     grunt.loadNpmTasks('grunt-typescript');
     grunt.registerTask('default', ['typescript', 'requirejs', 'less']);
+    grunt.registerTask('server', ['http-server:dev']);
     grunt.registerTask('develop', ['default', 'watch']);
 };
