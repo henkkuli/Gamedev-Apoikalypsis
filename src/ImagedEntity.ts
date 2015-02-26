@@ -1,4 +1,4 @@
-import Entity = require('entity');
+import Entity = require('./Entity');
 
 class ImagedEntity extends Entity {
     constructor(x: number, y: number, width: number, height: number, private _image: HTMLImageElement) {

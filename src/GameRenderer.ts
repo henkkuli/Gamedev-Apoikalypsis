@@ -1,5 +1,5 @@
-﻿import ImagedEntity = require('./imagedEntity');
-import Map = require('./map');
+﻿import ImagedEntity = require('./ImagedEntity');
+import Map = require('./Map');
 
 class GameRenderer {
     constructor(private _tileWidth: number, private _tileHeight: number) { }

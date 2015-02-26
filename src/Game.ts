@@ -1,10 +1,10 @@
 ﻿import Renderer = require('./renderer');
-import Player = require('./player');
-import Enemy = require('./enemy');
-import Entity = require('./entity');
-import ImagedEntity = require('./imagedEntity');
-import Map = require('./map');
-import Keyboard = require('./keyboard');
+import Player = require('./Player');
+import Enemy = require('./Enemy');
+import Entity = require('./Entity');
+import ImagedEntity = require('./ImagedEntity');
+import Map = require('./Map');
+import Keyboard = require('./Keyboard');
 import renderer = require('./renderer');
 import GameRenderer = require('./GameRenderer');
 

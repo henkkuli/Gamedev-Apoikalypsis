@@ -1,8 +1,8 @@
-import Game = require('./game');
+import Game = require('./Game');
 import renderer = require('./renderer');
-import Player = require('./player');
-import Keyboard = require('./keyboard');
-import Mainmenu = require('./menus/Mainmenu');
+import Player = require('./Player');
+import Keyboard = require('./Keyboard');
+import Mainmenu = require('./menus/MainMenu');
 import $ = require('jquery');
 
 $(document).ready(function () {

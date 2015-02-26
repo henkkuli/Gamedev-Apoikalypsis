@@ -1,4 +1,4 @@
-﻿import menu = require('./basemenu');
+﻿import menu = require('./BaseMenu');
 import $ = require('jquery');
 import GameCreator = require('../GameCreator');
 

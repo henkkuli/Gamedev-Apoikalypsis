@@ -1,4 +1,4 @@
-import Keyboard = require('./keyboard');
+import Keyboard = require('./Keyboard');
 
 export interface RenderLayer {
     /**

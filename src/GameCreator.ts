@@ -1,6 +1,6 @@
-﻿import Game = require('./game');
+﻿import Game = require('./Game');
 import renderer = require('./renderer');
-import Keyboard = require('./keyboard');
+import Keyboard = require('./Keyboard');
 
 class GameCreator implements renderer.RenderLayer {
     private _game: Game;

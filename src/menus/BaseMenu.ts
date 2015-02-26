@@ -1,5 +1,5 @@
 ﻿import renderer = require('../renderer');
-import Keyboard = require('../keyboard');
+import Keyboard = require('../Keyboard');
 
 export class Layer implements renderer.RenderLayer {
     constructor(private _components: Component[], private _selected: Component) { }

@@ -1,4 +1,4 @@
-﻿import menu = require('./basemenu');
+﻿import menu = require('./BaseMenu');
 import LevelSelector = require('./LevelSelector');
 
 class MainMenuLayer extends menu.Layer {
