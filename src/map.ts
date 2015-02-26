@@ -27,7 +27,7 @@ class Map {
 
     load(url: string): Promise<Map> {
         return new Promise<Map>((resolve: (value: Map) => void, reject: (err) => void) => {
-            $.get(url).done((data) => {
+            $.ajax(url, { dataType: 'text' }).done((data) => {
                 this.importFromString(data);
                 resolve(this);
             }).fail((err) => {
