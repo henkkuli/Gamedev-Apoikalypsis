@@ -54,7 +54,7 @@ class Game implements Renderer.RenderLayer {
         });
     }
 
-    update(keyboard: Keyboard): renderer.RenderLayer[] {
+    update(keyboard: Keyboard, handler: renderer.Handler): boolean {
         var now = new Date().getTime();
         var delta = (now - this._lastUpdate) / 1000;
         this._lastUpdate = now;
@@ -69,10 +69,10 @@ class Game implements Renderer.RenderLayer {
         if (keyboard.isKeyDown(Keyboard.Key.Down))
             this._currentPlayer.move(0, speed);
 
-        return [this];
+        return false;
     }
 
-    render(ctx: CanvasRenderingContext2D, width: number, height: number): void {
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): boolean {
         var renderer = this._renderer;
 
         // First map on the background
@@ -84,6 +84,9 @@ class Game implements Renderer.RenderLayer {
                 renderer.renderImagedEntity(ctx, <ImagedEntity> entity, width, height);
             }
         });
+
+        // Don't render lower layers
+        return false;
     }
 }
 

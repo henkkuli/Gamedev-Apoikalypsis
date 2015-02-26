@@ -3,14 +3,16 @@ import Keyboard = require('./Keyboard');
 export interface RenderLayer {
     /**
      * Updates the layer state.
-     * Returns list of layers which will replace the current layer.
-     * If nothing should happen, update should return [this].
+     * Returns whether the next layer in the stacks should be updated too.
+     * Handler may be used to modify the layer stack.
+     * If something is pushed to the stack false should be returned.
      */
-    update(keyboard: Keyboard): RenderLayer[];
+    update(keyboard: Keyboard, handler: Handler): boolean;
     /**
-     * Renders the current layer
+     * Renders the current layer.
+     * Returns whether the next layer in the stack should also be rendered.
      */
-    render(ctx: CanvasRenderingContext2D, width: number, height: number): void;
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): boolean;
 }
 
 /**
@@ -33,8 +35,14 @@ export class Handler {
     /**
      * Adds a new rendering layer to the top of the stack.
      */
-    push(layer: RenderLayer): void {
-        this._layerStack.push(layer);
+    push(arg: RenderLayer|RenderLayer[]): void {
+        if (arg instanceof Array) {
+            var array = <RenderLayer[]>arg;
+            array.forEach((layer) => this.push(layer));
+        } else {
+            var layer = <RenderLayer>arg;
+            this._layerStack.push(layer);
+        }
     }
     /**
      * Removes the top most rendering layer from the stack.
@@ -42,26 +50,45 @@ export class Handler {
     pop(): void {
         this._layerStack.pop();
     }
+    /**
+     * Removes the top most rendering layer from the stack until it reaches the defined layer. The defined layer is held in the stack.
+     */
+    popUntil(layer: RenderLayer): void {
+        while (this.top !== layer)
+            this.pop();
+    }
+    /**
+     * The top of the render stack.
+     */
+    get top(): RenderLayer {
+        if (this._layerStack.length <= 0)
+            return null;
+        return this._layerStack[this._layerStack.length - 1];
+    }
 
     update(): void {
         if (this._layerStack.length <= 0)
             return;
-        // Pop the top most layer and call its update method
-        var oldTop = this._layerStack.pop();
-        var toPush = oldTop.update(this._keyboard);
-        // Push returned actions back to the stack
-        if (!toPush.forEach)
-            console.log(toPush);
-        toPush.forEach((layer) => this._layerStack.push(layer));
-        // If the top has changed run its update also
-        if (this._layerStack[this._layerStack.length - 1] !== oldTop)
-            this.update();
+
+        for (var i = this._layerStack.length - 1; i >= 0; i--) {
+            // Needed in case of stack getting popped
+            if (i >= this._layerStack.length)
+                i = this._layerStack.length - 1;
+
+            var current = this._layerStack[i];
+            if (!current.update(this._keyboard, this))
+                break;
+        }
     }
 
     render(): void {
         if (this._layerStack.length <= 0)
             return;
         // Render the top most layer
-        this._layerStack[this._layerStack.length - 1].render(this._ctx, this._canvas.width, this._canvas.height);
+        for (var i = this._layerStack.length - 1; i >= 0; i--) {
+            var current = this._layerStack[i];
+            if (!current.render(this._ctx, this._canvas.width, this._canvas.height))
+                break;
+        }
     }
 }

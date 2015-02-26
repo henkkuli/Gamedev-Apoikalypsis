@@ -11,7 +11,7 @@ class GameCreator implements renderer.RenderLayer {
         this._loading = true;
     }
 
-    update(keyboard: Keyboard): renderer.RenderLayer[] {
+    update(keyboard: Keyboard, handler: renderer.Handler): boolean {
         if (!this._game) {
             // On first update create the game
             this._game = new Game();
@@ -19,12 +19,16 @@ class GameCreator implements renderer.RenderLayer {
             this._promise.then(() => this._loading = false);
         }
         if (this._loading) {
-            return [this];
+            return false;
         } else {
-            return [this._game];
+            // Replace GameCreator with the game
+            handler.popUntil(this);
+            handler.pop();
+            handler.push(this._game);
+            return false;
         }
     }
-    render(ctx: CanvasRenderingContext2D, width: number, height: number): void {
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): boolean {
         // Clear the background
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, width, height);
@@ -36,6 +40,9 @@ class GameCreator implements renderer.RenderLayer {
         ctx.fillStyle = '#000';
         ctx.fillText('Your map is loading:', 0.5 * width, 0.5 * height - 25);
         ctx.fillText(this._name + ' (' + this._url + ')', 0.5 * width, 0.5 * height + 25);
+
+        // Don't render lower layers
+        return false;
     }
 }
 

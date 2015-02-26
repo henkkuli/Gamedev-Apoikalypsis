@@ -17,21 +17,26 @@ export class Layer implements renderer.RenderLayer {
         this._selected = selected;
     }
 
-    update(keyboard: Keyboard): renderer.RenderLayer[] {
+    update(keyboard: Keyboard, handler: renderer.Handler): boolean {
         if (!this._selected)
-            return [this];
+            return false;
 
         // Ask from the selected what to do
         var ret = this._selected.update(keyboard);
         // Update selected
         this._selected = ret.selected;
         // Test if action should change
-        if (ret.action)
-            return ret.action;
-        // Just keep looping this action
-        return [this];
+        if (ret.action) {
+            // Pop this from the stack
+            handler.popUntil(this);
+            handler.pop();
+            // Push action to the stack
+            handler.push(ret.action);
+        }
+        // Don't call updates of other layers
+        return false;
     }
-    render(ctx: CanvasRenderingContext2D, width: number, height: number): void {
+    render(ctx: CanvasRenderingContext2D, width: number, height: number): boolean {
         // TODO: More sophisiticated placing algorithm
         // Clear the background
         ctx.fillStyle = '#fff';
@@ -49,6 +54,9 @@ export class Layer implements renderer.RenderLayer {
             component.render(ctx, x, y, this._selected);
             y += component.getHeight(ctx);
         });
+
+        // Don't render lower layers
+        return false;
     }
 }
 
