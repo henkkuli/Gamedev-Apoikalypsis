@@ -1,8 +1,8 @@
-﻿import menu = require('./BaseMenu');
+﻿import BaseMenu = require('./BaseMenu');
 import $ = require('jquery');
 import GameCreator = require('../GameCreator');
 
-class LevelSelectorLayer extends menu.Layer {
+class LevelSelectorLayer extends BaseMenu {
     constructor() {
         // Create a simple menu
         $.getJSON('resources/maps.json').done((data: { file: string; name: string; description: string }[]) => {
@@ -11,24 +11,24 @@ class LevelSelectorLayer extends menu.Layer {
                 descriptions.push({ caption: field.name, action: [new GameCreator(field.name, field.file)] });
             });
 
-            var selections = menu.Selection.createChainedSelections(descriptions);
+            var selections = BaseMenu.Selection.createChainedSelections(descriptions);
             this.components = selections;
             this.selected = selections[0];
 
         }).fail((err) => {
-            var messageLabel = new menu.Label('There was an error while loading the map list');
-            var backButton = menu.Selection.createChainedSelections([
+            var messageLabel = new BaseMenu.Label('There was an error while loading the map list');
+            var backButton = BaseMenu.Selection.createChainedSelections([
                 { caption: 'Go back to the main menu', action: [] }
             ])[0];
             this.components = [messageLabel, backButton];
             this.selected = backButton;
         });
 
-        var selections = menu.Selection.createChainedSelections([
+        var selections = BaseMenu.Selection.createChainedSelections([
             { caption: 'Start game', action: [] }
         ]);
 
-        super([new menu.Label('Loading map list...')], null);
+        super([new BaseMenu.Label('Loading map list...')], null);
     }
 }
 
